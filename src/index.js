@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import Modal from 'react-native-modal';
 import PropTypes from "prop-types";
+import Chip from './chip';
 
 export class index extends Component {
 
@@ -25,6 +26,7 @@ export class index extends Component {
       modalVisible: false,
       selectedItem: props.selectedItem,
       selectedItems: props.selectedItems,
+      tempSelectedItems: [],
     };
   }
 
@@ -51,6 +53,7 @@ export class index extends Component {
   };
 
   setModalVisible = (visible) => {
+    this.state.tempSelectedItems = JSON.parse(JSON.stringify(this.state.selectedItems));
     this.setState({ modalVisible: visible });
   };
 
@@ -78,10 +81,57 @@ export class index extends Component {
     );
   };
 
+  _renderMultiSelectItems = (items, onSubmit) => {
+    return (
+      <SafeAreaView>
+        <ScrollView>
+          <View>
+            {items.map(item => (
+              <TouchableHighlight
+                key={item.key}
+                style={{
+                  backgroundColor: this.state.tempSelectedItems.find(rawItem => rawItem === item.key) ? "red" : "white"
+                }}
+                onPress={() => {
+                  let tempSelectedItems = this.state.tempSelectedItems;
+                  if (tempSelectedItems.find(rawItem => rawItem === item.key)) {
+                    tempSelectedItems = tempSelectedItems.filter(rawItem => rawItem !== item.key);
+                  } else {
+                    tempSelectedItems.push(item.key);
+                  }
+                  this.setState({
+                    tempSelectedItems
+                  });
+                }}>
+                <Text>{item.label}</Text>
+              </TouchableHighlight>
+            ))}
+            <TouchableHighlight
+              style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+              onPress={() => {
+                this.setState({
+                  selectedItems: this.state.tempSelectedItems
+                });
+                if (onSubmit) {
+                  onSubmit(this.state.tempSelectedItems);
+                }
+                this.setModalVisible(false);
+              }}
+            >
+              <Text style={styles.textStyle}>Submit</Text>
+            </TouchableHighlight>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
   _renderItems = (type, items, onSubmit) => {
     switch (type) {
       case "select":
         return this._renderSingleSelectItems(items, onSubmit);
+      case "multi":
+        return this._renderMultiSelectItems(items, onSubmit);
     }
   };
 
@@ -96,11 +146,41 @@ export class index extends Component {
     }
   };
 
+  multiSelectItems = () => {
+    const { renderChip, items, chipStyle, chipIconStyle, searchInputPlaceholderText } = this.props;
+    if (this.state.selectedItems && this.state.selectedItems.length) {
+      return this.state.selectedItems.map(key =>
+        renderChip(
+          items.find(item => item.key === key),
+          () => {
+            this.setState({
+              selectedItems: this.state.selectedItems.filter(item => item !== key)
+            });
+          },
+          chipStyle,
+          chipIconStyle
+        )
+      );
+    } else {
+      return (
+        <Text>
+          {searchInputPlaceholderText}
+        </Text>
+      );
+    }
+  };
+
   _renderSearchItemText = () => {
     const { type } = this.props;
     switch (type) {
       case "select":
-        return this.searchItemTextSelect();
+        return (
+          <Text>
+            {this.searchItemTextSelect()}
+          </Text>
+        );
+      case "multi":
+        return this.multiSelectItems();
     }
   };
 
@@ -121,7 +201,7 @@ export class index extends Component {
           inputContainerBorderStyle,
           inputContainerStyle
         ]}>
-          <Text>{this._renderSearchItemText()}</Text>
+          {this._renderSearchItemText()}
         </View>
       </TouchableHighlight>
     );
@@ -164,17 +244,38 @@ index.propTypes = {
 
 index.defaultProps = {
   type: "select",
+  selectedItems: [],
   searchInputPlaceholderText: "Select Item",
   errorColor: 'rgb(213, 0, 0)',
   tintColor: 'rgb(0, 145, 234)',
   baseColor: 'rgba(0, 0, 0, .38)',
+  renderChip: (item, onClose, style, iconStyle) => (
+    <Chip
+      key={item.key}
+      iconStyle={iconStyle}
+      onClose={onClose}
+      text={item.label}
+      style={style}
+    />
+  )
 };
 
 const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-  }
+  },
+  openButton: {
+    backgroundColor: "#F194FF",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
 });
 
 export default index;
