@@ -3,7 +3,7 @@
   "scripts": {
     "start": "expo start",
     "dev": "cp -R ../src/* node_modules/@evolvier/react-native-select/src/",
-    "android": "expo start --android",
+    "android": "yarn dev && expo start --android",
     "ios": "yarn dev && expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject"

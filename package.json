@@ -4,6 +4,9 @@
   "description": "A multi (or single) select component",
   "main": "index.js",
   "scripts": {
+    "android": "cd example && yarn dev && expo start --android",
+    "ios": "cd example && yarn dev && expo start --ios",
+    "u": "cd example && yarn dev",
     "test": "test"
   },
   "repository": {
@@ -18,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/evolvier/react-native-select/issues"
   },
-  "homepage": "https://github.com/evolvier/react-native-select#readme"
+  "homepage": "https://github.com/evolvier/react-native-select#readme",
+  "dependencies": {
+    "react-native-modal": "^11.5.6"
+  }
 }
