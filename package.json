@@ -1,0 +1,22 @@
+{
+  "name": "@evolvier/react-native-select",
+  "version": "0.0.1",
+  "description": "A multi (or single) select component",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evolvier/react-native-select.git"
+  },
+  "keywords": [
+    "react-native-select"
+  ],
+  "author": "Vishnu PS",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/evolvier/react-native-select/issues"
+  },
+  "homepage": "https://github.com/evolvier/react-native-select#readme"
+}
