@@ -134,11 +134,16 @@ export class index extends Component {
   };
 
   _renderSearchInput = () => {
-    return (
-      <View style={styles.searchInputView}>
-        <TextInput placeholder={"Search..."} />
-      </View>
-    );
+    const { renderSearchInput, enableSearch, searchInputPlaceholderText } = this.props;
+    if (enableSearch) {
+      return renderSearchInput(this.state.searchText, searchInputPlaceholderText, (searchText) => {
+        this.setState({
+          searchText
+        });
+      });
+    } else {
+      return null;
+    }
   };
 
   _renderItems = (type, items, onSubmit) => {
@@ -245,7 +250,12 @@ export class index extends Component {
 
   render() {
     const { props, state } = this;
-    const { type, items, onSubmit } = props;
+    let { type, items, onSubmit } = props;
+    if (this.state.searchText) {
+      items = items.filter(item => item.title.match(new RegExp(this.state.searchText, "i")) || (
+        item.subtitle && item.subtitle.match(new RegExp(this.state.searchText, "i"))
+      ));
+    }
     return (
       <View>
         {this._renderSelectInput()}
@@ -268,13 +278,13 @@ index.propTypes = {
     PropTypes.shape({
       key: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       title: PropTypes.string.isRequired,
-      subTitle: PropTypes.string,
+      subtitle: PropTypes.string,
       disabled: PropTypes.bool,
       children: PropTypes.array,
     })
   ).isRequired,
   selectedItem: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  selectedItems: PropTypes.array,
+  selectedItems: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
   onSubmit: PropTypes.func,
   placeholderText: PropTypes.string,
   searchInputText: PropTypes.string,
@@ -287,10 +297,21 @@ index.defaultProps = {
   type: "select",
   selectedItems: [],
   placeholderText: "Select Item",
+  enableSearch: false,
+  searchInputPlaceholderText: "Search...",
   errorColor: "rgb(213, 0, 0)",
   tintColor: "rgb(0, 145, 234)",
   baseColor: "rgba(0, 0, 0, .38)",
   selectItemsPosition: "inside",
+  renderSearchInput: (value, placeholder, onChange) => (
+    <View style={styles.searchInputView}>
+      <TextInput
+        value={value}
+        placeholder={placeholder}
+        onChangeText={onChange}
+      />
+    </View>
+  ),
   renderSelectItems: (item, onPress, isSelected = false) => (
     <TouchableHighlight
       underlayColor="#f2f2f2"
