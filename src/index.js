@@ -64,19 +64,15 @@ export class index extends Component {
       <SafeAreaView>
         <ScrollView>
           <View>
-            {items.map(item => (
-              <TouchableHighlight key={item.key} onPress={() => {
-                this.setModalVisible(false);
-                this.setState({
-                  selectedItem: item.key
-                });
-                if (onSubmit) {
-                  onSubmit(item.key);
-                }
-              }}>
-                <Text>{item.title}</Text>
-              </TouchableHighlight>
-            ))}
+            {items.map(item => renderSelectItems(item, () => {
+              this.setModalVisible(false);
+              this.setState({
+                selectedItem: item.key
+              });
+              if (onSubmit) {
+                onSubmit(item.key);
+              }
+            }))}
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -84,30 +80,22 @@ export class index extends Component {
   };
 
   _renderMultiSelectItems = (items, onSubmit) => {
+    const { renderSelectItems } = this.props;
     return (
       <SafeAreaView>
         <ScrollView>
           <View>
-            {items.map(item => (
-              <TouchableHighlight
-                key={item.key}
-                style={{
-                  backgroundColor: this.state.tempSelectedItems.find(rawItem => rawItem === item.key) ? "red" : "white"
-                }}
-                onPress={() => {
-                  let tempSelectedItems = this.state.tempSelectedItems;
-                  if (tempSelectedItems.find(rawItem => rawItem === item.key)) {
-                    tempSelectedItems = tempSelectedItems.filter(rawItem => rawItem !== item.key);
-                  } else {
-                    tempSelectedItems.push(item.key);
-                  }
-                  this.setState({
-                    tempSelectedItems
-                  });
-                }}>
-                <Text>{item.title}</Text>
-              </TouchableHighlight>
-            ))}
+            {items.map(item => renderSelectItems(item, () => {
+              let tempSelectedItems = this.state.tempSelectedItems;
+              if (tempSelectedItems.find(rawItem => rawItem === item.key)) {
+                tempSelectedItems = tempSelectedItems.filter(rawItem => rawItem !== item.key);
+              } else {
+                tempSelectedItems.push(item.key);
+              }
+              this.setState({
+                tempSelectedItems
+              });
+            }, this.state.tempSelectedItems.find(rawItem => rawItem === item.key)))}
             <TouchableHighlight
               style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
               onPress={() => {
@@ -268,6 +256,16 @@ index.defaultProps = {
   tintColor: 'rgb(0, 145, 234)',
   baseColor: 'rgba(0, 0, 0, .38)',
   selectItemsPosition: "inside",
+  renderSelectItems: (item, onPress, isSelected = false) => (
+    <TouchableHighlight
+      key={item.key}
+      style={{
+        backgroundColor: isSelected ? "red" : "white"
+      }}
+      onPress={onPress}>
+      <Text>{item.title}</Text>
+    </TouchableHighlight>
+  ),
   renderChip: (item, onClose, style, iconStyle) => (
     <Chip
       key={item.key}
