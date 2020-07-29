@@ -16,7 +16,9 @@ import {
 } from "react-native";
 import Modal from 'react-native-modal';
 import PropTypes from "prop-types";
+
 import Chip from './chip';
+// import Tree from './tree';
 
 export class index extends Component {
 
@@ -72,7 +74,7 @@ export class index extends Component {
                   onSubmit(item.key);
                 }
               }}>
-                <Text>{item.label}</Text>
+                <Text>{item.title}</Text>
               </TouchableHighlight>
             ))}
           </View>
@@ -103,7 +105,7 @@ export class index extends Component {
                     tempSelectedItems
                   });
                 }}>
-                <Text>{item.label}</Text>
+                <Text>{item.title}</Text>
               </TouchableHighlight>
             ))}
             <TouchableHighlight
@@ -132,60 +134,69 @@ export class index extends Component {
         return this._renderSingleSelectItems(items, onSubmit);
       case "multi":
         return this._renderMultiSelectItems(items, onSubmit);
+      // case "tree":
+      //   return (<Tree/>);
     }
   };
 
-  searchItemTextSelect = () => {
-    const { searchInputPlaceholderText, searchInputText, items } = this.props;
+  selectInputText = () => {
+    const { placeholderText, searchInputText, items } = this.props;
     if (searchInputText) {
       return searchInputText;
     } else if (this.state.selectedItem && items.find(item => item.key === this.state.selectedItem)) {
-      return items.find(item => item.key === this.state.selectedItem).label;
+      return items.find(item => item.key === this.state.selectedItem).title;
     } else {
-      return searchInputPlaceholderText;
+      return placeholderText;
     }
   };
 
+  renderSelectItemsChip = (selectedItems) => {
+    const { renderChip, items, chipStyle, chipIconStyle } = this.props;
+    return selectedItems.map(key =>
+      renderChip(
+        items.find(item => item.key === key),
+        () => {
+          this.setState({
+            selectedItems: this.state.selectedItems.filter(item => item !== key)
+          });
+        },
+        chipStyle,
+        chipIconStyle
+      )
+    );
+  };
+
   multiSelectItems = () => {
-    const { renderChip, items, chipStyle, chipIconStyle, searchInputPlaceholderText } = this.props;
-    if (this.state.selectedItems && this.state.selectedItems.length) {
-      return this.state.selectedItems.map(key =>
-        renderChip(
-          items.find(item => item.key === key),
-          () => {
-            this.setState({
-              selectedItems: this.state.selectedItems.filter(item => item !== key)
-            });
-          },
-          chipStyle,
-          chipIconStyle
-        )
-      );
+    const { placeholderText, selectItemsPosition } = this.props;
+    if (selectItemsPosition === "inside" && this.state.selectedItems && this.state.selectedItems.length) {
+      return this.renderSelectItemsChip(this.state.selectedItems);
     } else {
       return (
         <Text>
-          {searchInputPlaceholderText}
+          {placeholderText}
         </Text>
       );
     }
   };
 
-  _renderSearchItemText = () => {
+  _renderSelectInputText = () => {
     const { type } = this.props;
     switch (type) {
       case "select":
         return (
           <Text>
-            {this.searchItemTextSelect()}
+            {this.selectInputText()}
           </Text>
         );
       case "multi":
         return this.multiSelectItems();
+      // case "tree":
+      //   return this.multiSelectItems();
     }
   };
 
   _renderSearchBox = () => {
-    const { inputContainerStyle } = this.props;
+    const { type, inputContainerStyle, selectItemsPosition } = this.props;
     const inputContainerBorderStyle = {
       borderBottomColor: this._getColor(),
       ...this._getLineStyleVariant()
@@ -196,12 +207,17 @@ export class index extends Component {
           this.setModalVisible(true);
         }}
       >
-        <View style={[
-          styles.inputContainer,
-          inputContainerBorderStyle,
-          inputContainerStyle
-        ]}>
-          {this._renderSearchItemText()}
+        <View>
+          <View style={[
+            styles.inputContainer,
+            inputContainerBorderStyle,
+            inputContainerStyle
+          ]}>
+            {this._renderSelectInputText()}
+          </View>
+          <View style={styles.inputBelowContainer}>
+            {type === "multi" && selectItemsPosition === "below" ? this.renderSelectItemsChip(this.state.selectedItems) : null}
+          </View>
         </View>
       </TouchableHighlight>
     );
@@ -231,30 +247,33 @@ index.propTypes = {
   type: PropTypes.string,
   items: PropTypes.arrayOf(PropTypes.shape({
     key: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    label: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    subTitle: PropTypes.string,
     disabled: PropTypes.bool,
     children: PropTypes.array,
   })).isRequired,
   selectedItem: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   selectedItems: PropTypes.array,
   onSubmit: PropTypes.func,
-  searchInputPlaceholderText: PropTypes.string,
+  placeholderText: PropTypes.string,
   searchInputText: PropTypes.string,
+  renderChip: PropTypes.func,
 };
 
 index.defaultProps = {
   type: "select",
   selectedItems: [],
-  searchInputPlaceholderText: "Select Item",
+  placeholderText: "Select Item",
   errorColor: 'rgb(213, 0, 0)',
   tintColor: 'rgb(0, 145, 234)',
   baseColor: 'rgba(0, 0, 0, .38)',
+  selectItemsPosition: "inside",
   renderChip: (item, onClose, style, iconStyle) => (
     <Chip
       key={item.key}
       iconStyle={iconStyle}
       onClose={onClose}
-      text={item.label}
+      text={item.title}
       style={style}
     />
   )
@@ -264,6 +283,11 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  inputBelowContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 10
   },
   openButton: {
     backgroundColor: "#F194FF",

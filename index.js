@@ -12,7 +12,7 @@ import ReactNativeSelect from "./src";
 export class index extends Component {
 	render() {
 		return (
-			<ReactNativeSelect {...this.props}/>
+			<ReactNativeSelect {...this.props} />
 		)
 	}
 }

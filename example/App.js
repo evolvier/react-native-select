@@ -5,19 +5,19 @@ import ReactNativeSelect from '@evolvier/react-native-select';
 
 const data = [{
   key: "item1",
-  label: "Item 1"
+  title: "Item 1"
 }, {
   key: "item2",
-  label: "Item 2"
+  title: "Item 2"
 }, {
   key: "item3",
-  label: "Item 3"
+  title: "Item 3"
 }, {
   key: "item4",
-  label: "Item 4"
+  title: "Item 4"
 }, {
   key: "item5",
-  label: "Item 5"
+  title: "Item 5"
 }];
 
 export default function App() {
@@ -27,6 +27,7 @@ export default function App() {
       <StatusBar />
       <ReactNativeSelect
         type="multi"
+        selectItemsPosition="below"
         items={data}
       />
     </View>
@@ -41,6 +42,6 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     // backgroundColor: "red",
     padding: 16,
-    marginTop:40
+    marginTop: 40
   },
 });
