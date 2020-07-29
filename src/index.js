@@ -35,8 +35,22 @@ export class index extends Component {
       selectedItem: props.selectedItem,
       selectedItems: props.selectedItems,
       tempSelectedItems: [],
+      scrollOffset: null,
     };
+    this.scrollViewRef = React.createRef();
   }
+
+  handleOnScroll = event => {
+    this.setState({
+      scrollOffset: event.nativeEvent.contentOffset.y,
+    });
+  };
+
+  handleScrollTo = p => {
+    if (this.scrollViewRef.current) {
+      this.scrollViewRef.current.scrollTo(p);
+    }
+  };
 
   _getColor = () => {
     const { errorColor, tintColor, baseColor, error } = this.props;
@@ -72,7 +86,11 @@ export class index extends Component {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {this._renderSearchInput()}
-        <ScrollView>
+        <ScrollView
+          ref={this.scrollViewRef}
+          onScroll={this.handleOnScroll}
+          scrollEventThrottle={16}
+        >
           <View>
             {items.map((item) =>
               renderSelectItems(item, () => {
@@ -96,7 +114,11 @@ export class index extends Component {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {this._renderSearchInput()}
-        <ScrollView>
+        <ScrollView
+          ref={this.scrollViewRef}
+          onScroll={this.handleOnScroll}
+          scrollEventThrottle={16}
+        >
           {items.map((item) =>
             renderSelectItems(
               item,
@@ -271,11 +293,18 @@ export class index extends Component {
 
   render() {
     const { props, state, setModalVisible } = this;
-    let { type, items, onSubmit, hideOnBackdropPress, disableAndroidBack } = props;
+    let { type, items, onSubmit, hideOnBackdropPress, disableAndroidBack, swipeToDismiss, modelProps } = props;
     if (this.state.searchText) {
       items = items.filter(item => item.title.match(new RegExp(this.state.searchText, "i")) || (
         item.subtitle && item.subtitle.match(new RegExp(this.state.searchText, "i"))
       ));
+    }
+    if (swipeToDismiss) {
+      modelProps.onSwipeComplete = () => this.setModalVisible(false);
+      modelProps.swipeDirection = ['down'];
+      modelProps.scrollTo = this.handleScrollTo;
+      modelProps.scrollOffset = this.state.scrollOffset;
+      modelProps.propagateSwipe = true;
     }
     return (
       <View>
@@ -286,6 +315,7 @@ export class index extends Component {
           onBackButtonPress={() => !disableAndroidBack && setModalVisible(false)}
           onBackdropPress={() => hideOnBackdropPress && setModalVisible(false)}
           avoidKeyboard
+          {...modelProps}
         >
           <View style={this.getContainerStyle()}>
             {this._renderItems(type, items, onSubmit)}
@@ -324,6 +354,8 @@ index.defaultProps = {
   enableSearch: false,
   hideOnBackdropPress: false,
   disableAndroidBack: false,
+  swipeToDismiss: false,
+  modelProps: {},
   searchInputPlaceholderText: "Search...",
   errorColor: "rgb(213, 0, 0)",
   tintColor: "rgb(0, 145, 234)",
