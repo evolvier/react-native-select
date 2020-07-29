@@ -12,7 +12,8 @@ import {
   TouchableHighlight,
   StyleSheet,
   SafeAreaView,
-  ScrollView
+  ScrollView,
+  ViewPropTypes,
 } from "react-native";
 import Modal from 'react-native-modal';
 import PropTypes from "prop-types";
@@ -191,24 +192,26 @@ export class index extends Component {
       ...this._getLineStyleVariant()
     };
     return (
-      <TouchableHighlight
-        onPress={() => {
-          this.setModalVisible(true);
-        }}
-      >
-        <View>
-          <View style={[
-            styles.inputContainer,
-            inputContainerBorderStyle,
-            inputContainerStyle
-          ]}>
-            {this._renderSelectInputText()}
+      <View>
+        <TouchableHighlight
+          onPress={() => {
+            this.setModalVisible(true);
+          }}
+        >
+          <View>
+            <View style={[
+              styles.inputContainer,
+              inputContainerBorderStyle,
+              inputContainerStyle
+            ]}>
+              {this._renderSelectInputText()}
+            </View>
           </View>
-          <View style={styles.inputBelowContainer}>
-            {type === "multi" && selectItemsPosition === "below" ? this.renderSelectItemsChip(this.state.selectedItems) : null}
-          </View>
+        </TouchableHighlight>
+        <View style={styles.inputBelowContainer}>
+          {type === "multi" && selectItemsPosition === "below" ? this.renderSelectItemsChip(this.state.selectedItems) : null}
         </View>
-      </TouchableHighlight>
+      </View>
     );
   };
 
@@ -247,6 +250,8 @@ index.propTypes = {
   placeholderText: PropTypes.string,
   searchInputText: PropTypes.string,
   renderChip: PropTypes.func,
+  inputContainerBorderStyle: ViewPropTypes.style,
+  inputContainerStyle: ViewPropTypes.style,
 };
 
 index.defaultProps = {

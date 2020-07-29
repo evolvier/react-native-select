@@ -26,8 +26,8 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar />
       <ReactNativeSelect
-        type="select"
-        selectItemsPosition="inside"
+        type="multi"
+        selectItemsPosition="below"
         items={data}
       />
     </View>
