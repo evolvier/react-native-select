@@ -263,8 +263,6 @@ export class index extends Component {
       default:
         return {
           flex: 1,
-          position: 'absolute',
-          width: windowWidth,
           maxHeight: windowHeight * 0.7,
           backgroundColor: "white"
         };
