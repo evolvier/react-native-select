@@ -15,6 +15,7 @@ import {
   SafeAreaView,
   ScrollView,
   ViewPropTypes,
+  Dimensions,
 } from "react-native";
 import Modal from "react-native-modal";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -22,6 +23,9 @@ import PropTypes from "prop-types";
 
 import Chip from "./chip";
 // import Tree from './tree';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export class index extends Component {
   constructor(props) {
@@ -248,6 +252,25 @@ export class index extends Component {
     );
   };
 
+  getContainerStyle = () => {
+    const { presentationStyle } = this.props;
+    switch (presentationStyle) {
+      case "fullScreen":
+        return {
+          flex: 1,
+          backgroundColor: "white"
+        };
+      default:
+        return {
+          flex: 1,
+          position: 'absolute',
+          width: windowWidth,
+          maxHeight: windowHeight * 0.7,
+          backgroundColor: "white"
+        };
+    }
+  }
+
   render() {
     const { props, state, setModalVisible } = this;
     let { type, items, onSubmit, hideOnBackdropPress } = props;
@@ -265,7 +288,7 @@ export class index extends Component {
           onBackdropPress={() => hideOnBackdropPress && setModalVisible(false)}
           avoidKeyboard
         >
-          <View style={{ flex: 1, backgroundColor: "white" }}>
+          <View style={this.getContainerStyle()}>
             {this._renderItems(type, items, onSubmit)}
           </View>
         </Modal>
