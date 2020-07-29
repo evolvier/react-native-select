@@ -184,7 +184,7 @@ export class index extends Component {
     }
   };
 
-  _renderSearchBox = () => {
+  _renderSelectInput = () => {
     const { type, inputContainerStyle, selectItemsPosition } = this.props;
     const inputContainerBorderStyle = {
       borderBottomColor: this._getColor(),
@@ -217,7 +217,7 @@ export class index extends Component {
     const { type, items, onSubmit } = props;
     return (
       <View>
-        {this._renderSearchBox()}
+        {this._renderSelectInput()}
         <Modal
           style={{ margin: 0, justifyContent: 'flex-end' }}
           isVisible={state.modalVisible}
