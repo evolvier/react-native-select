@@ -308,7 +308,9 @@ index.defaultProps = {
         </View>
         <View style={styles.itemContentView}>
           <Text style={styles.itemTitleTextStyle}>{item.title}</Text>
-          <Text style={styles.itemSubtitleTextStyle}>{item.subtitle}</Text>
+          {item.subtitle ? (
+            <Text style={styles.itemSubtitleTextStyle}>{item.subtitle}</Text>
+          ) : null}
         </View>
       </View>
     </TouchableHighlight>
@@ -385,6 +387,7 @@ const styles = StyleSheet.create({
   },
   itemContentView: {
     marginLeft: 15,
+    justifyContent: "center",
   },
   itemTitleTextStyle: {
     fontSize: 16,

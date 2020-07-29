@@ -5,24 +5,24 @@
 
 "use strict";
 
-import React from 'react';
+import React from "react";
 import {
   Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native';
+  View,
+} from "react-native";
 
 export default class Chip extends React.PureComponent {
   static defaultProps = {
-    onClose: () => { },
-    text: ''
+    onClose: () => {},
+    text: "",
   };
 
   constructor(props) {
     super(props);
-    this.isIOS = Platform.OS === 'ios';
+    this.isIOS = Platform.OS === "ios";
   }
 
   render() {
@@ -31,22 +31,26 @@ export default class Chip extends React.PureComponent {
     return (
       <View style={[styles.root, style]}>
         <View style={styles.container}>
-        <View style={styles.contentContainer}>
-          <Text style={styles.text} numberOfLines={1}>
-            {text}
-          </Text>
-          <Text style={styles.subtitle} numberOfLines={1}>
-            {"Men>Desi>Ethnic>Topwear"}
-          </Text>
-        </View>
+          <View style={styles.contentContainer}>
+            <Text style={styles.text} numberOfLines={1}>
+              {text}
+            </Text>
+            {subtitle ? (
+              <Text style={styles.subtitle} numberOfLines={1}>
+                {subtitle}
+              </Text>
+            ) : null}
+          </View>
           <TouchableOpacity
             style={[styles.iconWrapper, iconStyle]}
-            onPress={onClose}>
+            onPress={onClose}
+          >
             <Text
               style={[
                 styles.icon,
-                this.isIOS ? styles.iconIOS : styles.iconAndroid
-              ]}>
+                this.isIOS ? styles.iconIOS : styles.iconAndroid,
+              ]}
+            >
               ✕
             </Text>
           </TouchableOpacity>
@@ -58,51 +62,54 @@ export default class Chip extends React.PureComponent {
 
 const styles = StyleSheet.create({
   root: {
-    justifyContent: 'center',
+    justifyContent: "center",
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: "#e0e0e0",
     paddingLeft: 15,
     paddingRight: 10,
     paddingVertical: 5,
     marginBottom: 5,
-    marginRight: 5
+    marginRight: 5,
   },
   container: {
-    flexDirection: 'row',
-    overflow: 'hidden',
-    justifyContent: 'flex-end',
-    alignItems: 'center'
+    flexDirection: "row",
+    overflow: "hidden",
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  contentContainer: {
+    justifyContent: "center",
   },
   text: {
-    color: 'grey',
-    fontSize: 14
+    color: "grey",
+    fontSize: 14,
   },
-  subtitle:{
+  subtitle: {
     color: "#243746",
-    fontSize:12,
-    fontWeight: "bold"
+    fontSize: 12,
+    fontWeight: "bold",
   },
   iconWrapper: {
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: "#e0e0e0",
     height: 25,
     width: 25,
-    overflow: 'hidden',
+    overflow: "hidden",
     marginLeft: 4,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
   icon: {
-    textAlign: 'center',
-    color: 'red'
+    textAlign: "center",
+    color: "red",
   },
   iconIOS: {
-    fontSize: 14
+    fontSize: 14,
   },
   iconAndroid: {
     fontSize: 13,
-    lineHeight: 15
-  }
+    lineHeight: 15,
+  },
 });

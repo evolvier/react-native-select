@@ -22,12 +22,10 @@ const data = [
   {
     key: "item4",
     title: "Ethnic",
-    subtitle: "Men>Desi>Ethnic>Topwear",
   },
   {
     key: "item5",
     title: "Ethnic",
-    subtitle: "Men>Desi>Ethnic>Topwear",
   },
   {
     key: "item6",
