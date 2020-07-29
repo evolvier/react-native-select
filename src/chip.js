@@ -26,14 +26,19 @@ export default class Chip extends React.PureComponent {
   }
 
   render() {
-    const { iconStyle, onClose, style, text } = this.props;
+    const { iconStyle, onClose, style, text, subtitle } = this.props;
 
     return (
       <View style={[styles.root, style]}>
         <View style={styles.container}>
+        <View style={styles.contentContainer}>
           <Text style={styles.text} numberOfLines={1}>
             {text}
           </Text>
+          <Text style={styles.subtitle} numberOfLines={1}>
+            {"Men>Desi>Ethnic>Topwear"}
+          </Text>
+        </View>
           <TouchableOpacity
             style={[styles.iconWrapper, iconStyle]}
             onPress={onClose}>
@@ -55,12 +60,13 @@ const styles = StyleSheet.create({
   root: {
     justifyContent: 'center',
     borderRadius: 50,
-    backgroundColor: '#e0e0e0',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    height: 28,
-    marginBottom: 4,
-    marginRight: 4
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    paddingLeft: 15,
+    paddingRight: 10,
+    paddingVertical: 5,
+    marginBottom: 5,
+    marginRight: 5
   },
   container: {
     flexDirection: 'row',
@@ -69,13 +75,20 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   text: {
-    color: 'rgba(0, 0, 0, 0.87)'
+    color: 'grey',
+    fontSize: 14
+  },
+  subtitle:{
+    color: "#243746",
+    fontSize:12,
+    fontWeight: "bold"
   },
   iconWrapper: {
     borderRadius: 50,
-    backgroundColor: '#a6a6a6',
-    height: 16,
-    width: 16,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    height: 25,
+    width: 25,
     overflow: 'hidden',
     marginLeft: 4,
     justifyContent: 'center',
@@ -83,7 +96,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     textAlign: 'center',
-    color: '#e0e0e0'
+    color: 'red'
   },
   iconIOS: {
     fontSize: 14
