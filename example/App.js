@@ -84,9 +84,14 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar />
       <ReactNativeSelect
-        type="multi"
-        selectItemsPosition="below"
+        // type="multi"
+        selectItemsPosition="inside"
         items={data}
+        // enableSearch
+        presentationStyle="fullScreen"
+        hideOnBackdropPress
+        // disableAndroidBack
+        swipeToDismiss
       />
     </View>
   );
