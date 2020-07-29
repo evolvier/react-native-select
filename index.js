@@ -5,16 +5,14 @@
 
 "use strict";
 
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 import ReactNativeSelect from "./src";
 
 export class index extends Component {
-	render() {
-		return (
-			<ReactNativeSelect {...this.props} />
-		)
-	}
+  render() {
+    return <ReactNativeSelect {...this.props} />;
+  }
 }
 
 export default index;

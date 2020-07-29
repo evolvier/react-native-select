@@ -260,7 +260,7 @@ index.defaultProps = {
     <TouchableHighlight
       key={item.key}
       style={{
-        backgroundColor: isSelected ? "red" : "white"
+        backgroundColor: isSelected ? "blue" : "white"
       }}
       onPress={onPress}>
       <Text>{item.title}</Text>
