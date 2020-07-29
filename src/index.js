@@ -271,7 +271,7 @@ export class index extends Component {
 
   render() {
     const { props, state, setModalVisible } = this;
-    let { type, items, onSubmit, hideOnBackdropPress } = props;
+    let { type, items, onSubmit, hideOnBackdropPress, disableAndroidBack } = props;
     if (this.state.searchText) {
       items = items.filter(item => item.title.match(new RegExp(this.state.searchText, "i")) || (
         item.subtitle && item.subtitle.match(new RegExp(this.state.searchText, "i"))
@@ -283,6 +283,7 @@ export class index extends Component {
         <Modal
           style={{ margin: 0, justifyContent: "flex-end" }}
           isVisible={state.modalVisible}
+          onBackButtonPress={() => !disableAndroidBack && setModalVisible(false)}
           onBackdropPress={() => hideOnBackdropPress && setModalVisible(false)}
           avoidKeyboard
         >
@@ -322,6 +323,7 @@ index.defaultProps = {
   placeholderText: "Select Item",
   enableSearch: false,
   hideOnBackdropPress: false,
+  disableAndroidBack: false,
   searchInputPlaceholderText: "Search...",
   errorColor: "rgb(213, 0, 0)",
   tintColor: "rgb(0, 145, 234)",
