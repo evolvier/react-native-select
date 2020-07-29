@@ -249,8 +249,8 @@ export class index extends Component {
   };
 
   render() {
-    const { props, state } = this;
-    let { type, items, onSubmit } = props;
+    const { props, state, setModalVisible } = this;
+    let { type, items, onSubmit, hideOnBackdropPress } = props;
     if (this.state.searchText) {
       items = items.filter(item => item.title.match(new RegExp(this.state.searchText, "i")) || (
         item.subtitle && item.subtitle.match(new RegExp(this.state.searchText, "i"))
@@ -262,6 +262,8 @@ export class index extends Component {
         <Modal
           style={{ margin: 0, justifyContent: "flex-end" }}
           isVisible={state.modalVisible}
+          onBackdropPress={() => hideOnBackdropPress && setModalVisible(false)}
+          avoidKeyboard
         >
           <View style={{ flex: 1, backgroundColor: "white" }}>
             {this._renderItems(type, items, onSubmit)}
@@ -298,6 +300,7 @@ index.defaultProps = {
   selectedItems: [],
   placeholderText: "Select Item",
   enableSearch: false,
+  hideOnBackdropPress: false,
   searchInputPlaceholderText: "Search...",
   errorColor: "rgb(213, 0, 0)",
   tintColor: "rgb(0, 145, 234)",
