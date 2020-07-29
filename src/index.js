@@ -66,7 +66,8 @@ export class index extends Component {
   _renderSingleSelectItems = (items, onSubmit) => {
     const { renderSelectItems } = this.props;
     return (
-      <SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
+        {this._renderSearchInput()}
         <ScrollView>
           <View>
             {items.map((item) =>
@@ -89,7 +90,7 @@ export class index extends Component {
   _renderMultiSelectItems = (items, onSubmit) => {
     const { renderSelectItems } = this.props;
     return (
-      <View style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
         {this._renderSearchInput()}
         <ScrollView>
           {items.map((item) =>
@@ -128,7 +129,7 @@ export class index extends Component {
         >
           <Text style={styles.textStyle}>DONE</Text>
         </TouchableHighlight>
-      </View>
+      </SafeAreaView>
     );
   };
 

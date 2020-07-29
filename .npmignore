@@ -1,0 +1,4 @@
+# .npmignore
+example
+node_modules
+tests
