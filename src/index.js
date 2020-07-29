@@ -60,6 +60,7 @@ export class index extends Component {
   };
 
   _renderSingleSelectItems = (items, onSubmit) => {
+    const { renderSelectItems } = this.props;
     return (
       <SafeAreaView>
         <ScrollView>
