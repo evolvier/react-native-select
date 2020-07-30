@@ -59,4 +59,5 @@ Please make sure to update tests as appropriate.
 @evolvier/react-native-select is [MIT Licensed](LICENSE).
 
 ![image](https://www.evolvier.com/assets/images/logo-dark.png)
+
 Copyright 2020 [Evolvier Technologies](https://www.evolvier.com). All rights reserved.
