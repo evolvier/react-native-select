@@ -43,10 +43,38 @@ class Example extends Component {
       },
     ];
 
-    return <ReactNativeSelect items={data}/>;
+    return (
+      <ReactNativeSelect
+        items={data}
+        onSubmit={(selectedItem) => console.log(selectedItem)}
+      />
+    );
   }
 }
 ```
+
+## Props
+
+| Property                     | Type              | Default         | Description                            |
+| ---------------------------- | ----------------- | --------------- | -------------------------------------- |
+| `items` [`*`](#`*`)          | `Array`           |                 | Array of objects to populate the list [More info](#items) |
+| `onSubmit` [`*`](#`*`)       | `Func`            |                 | Called when selectedItem(s) changes |
+| `type`                       | `String`          | `select`        | Type of selection [`select` or `multi`]                          |
+| `placeholderText`            | `String`          | "`Select Item`" | Select input placeholder text                                    |
+| `renderItem`                 | `Func`            |                 |                                                                  |
+| `selectedItemsPosition`      | `String`          | `inside`        | Position of selected items in `multi` type [`inside` or `below`] |
+| `renderSelectedItem`         | `Func`            |                 |                                                                  |
+| `enableSearch`               | `Boolean`         | `false`         | Enable search                                                    |
+| `searchInputPlaceholderText` | `String`          | "`Search...`"   | Search box placeholder text                                      |
+| `renderSearchInput`          | `Func`            |                 |                                                                  |
+| `defaultSelectedItems`       | `Array`           |                 |                                                                  |
+| `defaultSelectedItem`        | `String | Number` |                 |                                                                  |
+| `hideOnBackdropPress`        | `Boolean`         | `false`         |                                                                  |
+| `disableAndroidBack`         | `Boolean`         | `false`         |                                                                  |
+
+###### `*` `isRequired fields`
+
+### items
 
 ## Contributing
 
@@ -59,5 +87,4 @@ Please make sure to update tests as appropriate.
 @evolvier/react-native-select is [MIT Licensed](LICENSE).
 
 ![image](https://www.evolvier.com/assets/images/logo-dark.png)
-
 Copyright 2020 [Evolvier Technologies](https://www.evolvier.com). All rights reserved.

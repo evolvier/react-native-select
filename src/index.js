@@ -82,7 +82,7 @@ export class index extends Component {
   };
 
   _renderSingleSelectItems = (items, onSubmit) => {
-    const { renderSelectItems } = this.props;
+    const { renderItem } = this.props;
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {this._renderSearchInput()}
@@ -93,7 +93,7 @@ export class index extends Component {
         >
           <View>
             {items.map((item) =>
-              renderSelectItems(item, () => {
+              renderItem(item, () => {
                 this.setModalVisible(false);
                 this.setState({
                   selectedItem: item.key,
@@ -110,7 +110,7 @@ export class index extends Component {
   };
 
   _renderMultiSelectItems = (items, onSubmit) => {
-    const { renderSelectItems } = this.props;
+    const { renderItem } = this.props;
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {this._renderSearchInput()}
@@ -120,7 +120,7 @@ export class index extends Component {
           scrollEventThrottle={16}
         >
           {items.map((item) =>
-            renderSelectItems(
+            renderItem(
               item,
               () => {
                 let tempSelectedItems = this.state.tempSelectedItems;
@@ -198,9 +198,9 @@ export class index extends Component {
   };
 
   renderSelectItemsChip = (selectedItems) => {
-    const { renderChip, items, chipStyle, chipIconStyle } = this.props;
+    const { renderSelectedItem, items, chipStyle, chipIconStyle } = this.props;
     return selectedItems.map((key) =>
-      renderChip(
+      renderSelectedItem(
         items.find((item) => item.key === key),
         () => {
           this.setState({
@@ -343,7 +343,7 @@ index.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   placeholderText: PropTypes.string,
   searchInputText: PropTypes.string,
-  renderChip: PropTypes.func,
+  renderSelectedItem: PropTypes.func,
   inputContainerBorderStyle: ViewPropTypes.style,
   inputContainerStyle: ViewPropTypes.style,
 };
@@ -371,7 +371,7 @@ index.defaultProps = {
       />
     </View>
   ),
-  renderSelectItems: (item, onPress, isSelected = false) => (
+  renderItem: (item, onPress, isSelected = false) => (
     <TouchableHighlight
       underlayColor="#f2f2f2"
       key={item.key}
@@ -396,7 +396,7 @@ index.defaultProps = {
       </View>
     </TouchableHighlight>
   ),
-  renderChip: (item, onClose, style, iconStyle) => (
+  renderSelectedItem: (item, onClose, style, iconStyle) => (
     <Chip
       key={item.key}
       iconStyle={iconStyle}
