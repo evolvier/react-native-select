@@ -198,11 +198,14 @@ export class index extends Component {
   };
 
   renderSelectItemsChip = (selectedItems) => {
-    const { renderSelectedItem, items, chipStyle, chipIconStyle } = this.props;
+    const { renderSelectedItem, items, chipStyle, chipIconStyle, onSubmit } = this.props;
     return selectedItems.map((key) =>
       renderSelectedItem(
         items.find((item) => item.key === key),
         () => {
+          onSubmit(this.state.selectedItems.filter(
+            (item) => item !== key
+          ));
           this.setState({
             selectedItems: this.state.selectedItems.filter(
               (item) => item !== key
