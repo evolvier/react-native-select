@@ -32,8 +32,8 @@ export class index extends Component {
     super(props);
     this.state = {
       modalVisible: false,
-      selectedItem: props.selectedItem,
-      selectedItems: props.selectedItems,
+      selectedItem: props.defaultSelectedItem,
+      selectedItems: props.defaultSelectedItems,
       tempSelectedItems: [],
       scrollOffset: null,
     };
@@ -216,9 +216,9 @@ export class index extends Component {
   };
 
   multiSelectItems = () => {
-    const { placeholderText, selectItemsPosition } = this.props;
+    const { placeholderText, selectedItemsPosition } = this.props;
     if (
-      selectItemsPosition === "inside" &&
+      selectedItemsPosition === "inside" &&
       this.state.selectedItems &&
       this.state.selectedItems.length
     ) {
@@ -241,7 +241,7 @@ export class index extends Component {
   };
 
   _renderSelectInput = () => {
-    const { type, inputContainerStyle, selectItemsPosition } = this.props;
+    const { type, inputContainerStyle, selectedItemsPosition } = this.props;
     const inputContainerBorderStyle = {
       borderBottomColor: this._getColor(),
       ...this._getLineStyleVariant(),
@@ -266,7 +266,7 @@ export class index extends Component {
           </View>
         </TouchableHighlight>
         <View style={styles.inputBelowContainer}>
-          {type === "multi" && selectItemsPosition === "below"
+          {type === "multi" && selectedItemsPosition === "below"
             ? this.renderSelectItemsChip(this.state.selectedItems)
             : null}
         </View>
@@ -337,9 +337,10 @@ index.propTypes = {
       children: PropTypes.array,
     })
   ).isRequired,
-  selectedItem: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  selectedItems: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
-  onSubmit: PropTypes.func,
+  defaultSelectedItem: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  defaultSelectedItems: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
+  selectedItemsPosition: PropTypes.string,
+  onSubmit: PropTypes.func.isRequired,
   placeholderText: PropTypes.string,
   searchInputText: PropTypes.string,
   renderChip: PropTypes.func,
@@ -349,7 +350,7 @@ index.propTypes = {
 
 index.defaultProps = {
   type: "select",
-  selectedItems: [],
+  defaultSelectedItems: [],
   placeholderText: "Select Item",
   enableSearch: false,
   hideOnBackdropPress: false,
@@ -360,7 +361,7 @@ index.defaultProps = {
   errorColor: "rgb(213, 0, 0)",
   tintColor: "rgb(0, 145, 234)",
   baseColor: "rgba(0, 0, 0, .38)",
-  selectItemsPosition: "inside",
+  selectedItemsPosition: "inside",
   renderSearchInput: (value, placeholder, onChange) => (
     <View style={styles.searchInputView}>
       <TextInput
