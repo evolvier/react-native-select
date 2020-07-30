@@ -14,10 +14,18 @@
     "url": "git+https://github.com/evolvier/react-native-select.git"
   },
   "keywords": [
-    "react-native-select"
+    "react-native-select",
+    "multi-select",
+    "select",
+    "simple-select",
+    "react-component",
+    "react",
+    "react-native",
+    "ios",
+    "android"
   ],
   "author": "Vishnu PS",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/evolvier/react-native-select/issues"
   },
