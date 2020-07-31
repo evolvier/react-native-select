@@ -95,6 +95,7 @@ export default function App() {
         hideOnBackdropPress
         // disableAndroidBack
         swipeToDismiss
+        onSubmit={() => {}}
       />
     </View>
   );

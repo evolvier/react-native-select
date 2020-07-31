@@ -11,6 +11,7 @@ import {
   TextInput,
   View,
   TouchableHighlight,
+  TouchableOpacity,
   StyleSheet,
   SafeAreaView,
   ScrollView,
@@ -24,8 +25,8 @@ import PropTypes from "prop-types";
 import Chip from "./chip";
 // import Tree from './tree';
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 export class index extends Component {
   constructor(props) {
@@ -40,13 +41,13 @@ export class index extends Component {
     this.scrollViewRef = React.createRef();
   }
 
-  handleOnScroll = event => {
+  handleOnScroll = (event) => {
     this.setState({
       scrollOffset: event.nativeEvent.contentOffset.y,
     });
   };
 
-  handleScrollTo = p => {
+  handleScrollTo = (p) => {
     if (this.scrollViewRef.current) {
       this.scrollViewRef.current.scrollTo(p);
     }
@@ -82,7 +83,7 @@ export class index extends Component {
   };
 
   _renderSingleSelectItems = (items, onSubmit) => {
-    const { renderItem } = this.props;
+    const { renderItem, checkedIcon, unCheckedIcon } = this.props;
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {this._renderSearchInput()}
@@ -93,15 +94,21 @@ export class index extends Component {
         >
           <View>
             {items.map((item) =>
-              renderItem(item, () => {
-                this.setModalVisible(false);
-                this.setState({
-                  selectedItem: item.key,
-                });
-                if (onSubmit) {
-                  onSubmit(item.key);
-                }
-              })
+              renderItem(
+                item,
+                () => {
+                  this.setModalVisible(false);
+                  this.setState({
+                    selectedItem: item.key,
+                  });
+                  if (onSubmit) {
+                    onSubmit(item.key);
+                  }
+                },
+                item.key === this.state.selectedItem,
+                checkedIcon,
+                unCheckedIcon
+              )
             )}
           </View>
         </ScrollView>
@@ -110,7 +117,7 @@ export class index extends Component {
   };
 
   _renderMultiSelectItems = (items, onSubmit) => {
-    const { renderItem } = this.props;
+    const { renderItem, checkedIcon, unCheckedIcon } = this.props;
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {this._renderSearchInput()}
@@ -137,7 +144,9 @@ export class index extends Component {
               },
               this.state.tempSelectedItems.find(
                 (rawItem) => rawItem === item.key
-              )
+              ),
+              checkedIcon,
+              unCheckedIcon
             )
           )}
         </ScrollView>
@@ -160,13 +169,21 @@ export class index extends Component {
   };
 
   _renderSearchInput = () => {
-    const { renderSearchInput, enableSearch, searchInputPlaceholderText } = this.props;
+    const {
+      renderSearchInput,
+      enableSearch,
+      searchInputPlaceholderText,
+    } = this.props;
     if (enableSearch) {
-      return renderSearchInput(this.state.searchText, searchInputPlaceholderText, (searchText) => {
-        this.setState({
-          searchText
-        });
-      });
+      return renderSearchInput(
+        this.state.searchText,
+        searchInputPlaceholderText,
+        (searchText) => {
+          this.setState({
+            searchText,
+          });
+        }
+      );
     } else {
       return null;
     }
@@ -198,14 +215,20 @@ export class index extends Component {
   };
 
   renderSelectItemsChip = (selectedItems) => {
-    const { renderSelectedItem, items, chipStyle, chipIconStyle, onSubmit } = this.props;
+    const {
+      renderSelectedItem,
+      items,
+      chipStyle,
+      chipIconStyle,
+      onSubmit,
+    } = this.props;
     return selectedItems.map((key) =>
       renderSelectedItem(
         items.find((item) => item.key === key),
         () => {
-          onSubmit(this.state.selectedItems.filter(
-            (item) => item !== key
-          ));
+          if (onSubmit) {
+            onSubmit(this.state.selectedItems.filter((item) => item !== key));
+          }
           this.setState({
             selectedItems: this.state.selectedItems.filter(
               (item) => item !== key
@@ -251,7 +274,8 @@ export class index extends Component {
     };
     return (
       <View>
-        <TouchableHighlight
+        <TouchableOpacity
+          activeOpacity={0.5}
           onPress={() => {
             this.setModalVisible(true);
           }}
@@ -267,7 +291,7 @@ export class index extends Component {
               {this._renderSelectInputText()}
             </View>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
         <View style={styles.inputBelowContainer}>
           {type === "multi" && selectedItemsPosition === "below"
             ? this.renderSelectItemsChip(this.state.selectedItems)
@@ -283,28 +307,39 @@ export class index extends Component {
       case "fullScreen":
         return {
           flex: 1,
-          backgroundColor: "white"
+          backgroundColor: "white",
         };
       default:
         return {
           flex: 1,
           maxHeight: windowHeight * 0.7,
-          backgroundColor: "white"
+          backgroundColor: "white",
         };
     }
-  }
+  };
 
   render() {
     const { props, state, setModalVisible } = this;
-    let { type, items, onSubmit, hideOnBackdropPress, disableAndroidBack, swipeToDismiss, modelProps } = props;
+    let {
+      type,
+      items,
+      onSubmit,
+      hideOnBackdropPress,
+      disableAndroidBack,
+      swipeToDismiss,
+      modelProps,
+    } = props;
     if (this.state.searchText) {
-      items = items.filter(item => item.title.match(new RegExp(this.state.searchText, "i")) || (
-        item.subtitle && item.subtitle.match(new RegExp(this.state.searchText, "i"))
-      ));
+      items = items.filter(
+        (item) =>
+          item.title.match(new RegExp(this.state.searchText, "i")) ||
+          (item.subtitle &&
+            item.subtitle.match(new RegExp(this.state.searchText, "i")))
+      );
     }
     if (swipeToDismiss) {
       modelProps.onSwipeComplete = () => this.setModalVisible(false);
-      modelProps.swipeDirection = ['down'];
+      modelProps.swipeDirection = ["down"];
       modelProps.scrollTo = this.handleScrollTo;
       modelProps.scrollOffset = this.state.scrollOffset;
       modelProps.propagateSwipe = true;
@@ -315,7 +350,9 @@ export class index extends Component {
         <Modal
           style={{ margin: 0, justifyContent: "flex-end" }}
           isVisible={state.modalVisible}
-          onBackButtonPress={() => !disableAndroidBack && setModalVisible(false)}
+          onBackButtonPress={() =>
+            !disableAndroidBack && setModalVisible(false)
+          }
           onBackdropPress={() => hideOnBackdropPress && setModalVisible(false)}
           avoidKeyboard
           {...modelProps}
@@ -340,8 +377,13 @@ index.propTypes = {
       children: PropTypes.array,
     })
   ).isRequired,
-  defaultSelectedItem: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  defaultSelectedItems: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
+  defaultSelectedItem: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  defaultSelectedItems: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  ),
   selectedItemsPosition: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   placeholderText: PropTypes.string,
@@ -374,22 +416,20 @@ index.defaultProps = {
       />
     </View>
   ),
-  renderItem: (item, onPress, isSelected = false) => (
+  renderItem: (
+    item,
+    onPress,
+    isSelected = false,
+    checkedIcon,
+    unCheckedIcon
+  ) => (
     <TouchableHighlight
       underlayColor="#f2f2f2"
       key={item.key}
       onPress={onPress}
     >
       <View style={styles.itemMainView}>
-        <View
-          style={
-            isSelected ? styles.selectedIconView : styles.unselectedIconView
-          }
-        >
-          {isSelected ? (
-            <Icon name={"check"} style={styles.checkIcon} size={25} />
-          ) : null}
-        </View>
+        <View>{isSelected ? checkedIcon : unCheckedIcon}</View>
         <View style={styles.itemContentView}>
           <Text style={styles.itemTitleTextStyle}>{item.title}</Text>
           {item.subtitle ? (
@@ -409,6 +449,8 @@ index.defaultProps = {
       style={style}
     />
   ),
+  checkedIcon: <Icon name={"check-circle"} size={30} />,
+  unCheckedIcon: <Icon name={"check-circle-outline"} size={30} />,
 };
 
 const styles = StyleSheet.create({
@@ -465,9 +507,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#243746",
-  },
-  checkIcon: {
-    color: "#FFFFFF",
   },
   itemContentView: {
     marginLeft: 15,
