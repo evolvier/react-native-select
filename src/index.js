@@ -528,7 +528,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     borderWidth: 1,
     borderColor: "grey",
-    padding: 10,
+    paddingHorizontal: 10,
+    justifyContent: "center",
     height: 50,
   },
   textStyle: {
