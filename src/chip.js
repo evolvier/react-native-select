@@ -26,17 +26,25 @@ export default class Chip extends React.PureComponent {
   }
 
   render() {
-    const { iconStyle, onClose, style, text, subtitle } = this.props;
+    const {
+      iconStyle,
+      onClose,
+      style,
+      text,
+      textStyle,
+      subtitle,
+      subtitleStyle,
+    } = this.props;
 
     return (
       <View style={[styles.root, style]}>
         <View style={styles.container}>
           <View style={styles.contentContainer}>
-            <Text style={styles.text} numberOfLines={1}>
+            <Text style={[styles.text, textStyle]} numberOfLines={1}>
               {text}
             </Text>
             {subtitle ? (
-              <Text style={styles.subtitle} numberOfLines={1}>
+              <Text style={[styles.subtitle, subtitleStyle]} numberOfLines={1}>
                 {subtitle}
               </Text>
             ) : null}

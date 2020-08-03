@@ -83,7 +83,13 @@ export class index extends Component {
   };
 
   _renderSingleSelectItems = (items, onSubmit) => {
-    const { renderItem, checkedIcon, unCheckedIcon } = this.props;
+    const {
+      renderItem,
+      checkedIcon,
+      unCheckedIcon,
+      listItemTitleTextStyle,
+      listItemSubtitleTextStyle,
+    } = this.props;
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {this._renderSearchInput()}
@@ -107,7 +113,9 @@ export class index extends Component {
                 },
                 item.key === this.state.selectedItem,
                 checkedIcon,
-                unCheckedIcon
+                unCheckedIcon,
+                listItemTitleTextStyle,
+                listItemSubtitleTextStyle
               )
             )}
           </View>
@@ -117,7 +125,13 @@ export class index extends Component {
   };
 
   _renderMultiSelectItems = (items, onSubmit) => {
-    const { renderItem, checkedIcon, unCheckedIcon } = this.props;
+    const {
+      renderItem,
+      checkedIcon,
+      unCheckedIcon,
+      listItemTitleTextStyle,
+      listItemSubtitleTextStyle,
+    } = this.props;
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {this._renderSearchInput()}
@@ -146,11 +160,15 @@ export class index extends Component {
                 (rawItem) => rawItem === item.key
               ),
               checkedIcon,
-              unCheckedIcon
+              unCheckedIcon,
+              listItemTitleTextStyle,
+              listItemSubtitleTextStyle
             )
           )}
         </ScrollView>
         <TouchableHighlight
+          activeOpacity={1}
+          underlayColor={"#182833"}
           style={{ ...styles.openButton, backgroundColor: "#243746" }}
           onPress={() => {
             this.setState({
@@ -220,6 +238,8 @@ export class index extends Component {
       items,
       chipStyle,
       chipIconStyle,
+      chipTitleTextStyle,
+      chipSubTitleTextStyle,
       onSubmit,
     } = this.props;
     return selectedItems.map((key) =>
@@ -236,13 +256,19 @@ export class index extends Component {
           });
         },
         chipStyle,
-        chipIconStyle
+        chipIconStyle,
+        chipTitleTextStyle,
+        chipSubTitleTextStyle
       )
     );
   };
 
   multiSelectItems = () => {
-    const { placeholderText, selectedItemsPosition } = this.props;
+    const {
+      placeholderText,
+      selectedItemsPosition,
+      placeholderTextStyle,
+    } = this.props;
     if (
       selectedItemsPosition === "inside" &&
       this.state.selectedItems &&
@@ -250,15 +276,17 @@ export class index extends Component {
     ) {
       return this.renderSelectItemsChip(this.state.selectedItems);
     } else {
-      return <Text>{placeholderText}</Text>;
+      return <Text style={placeholderTextStyle}>{placeholderText}</Text>;
     }
   };
 
   _renderSelectInputText = () => {
-    const { type } = this.props;
+    const { type, placeholderTextStyle } = this.props;
     switch (type) {
       case "select":
-        return <Text>{this.selectInputText()}</Text>;
+        return (
+          <Text style={placeholderTextStyle}>{this.selectInputText()}</Text>
+        );
       case "multi":
         return this.multiSelectItems();
       // case "tree":
@@ -391,6 +419,12 @@ index.propTypes = {
   renderSelectedItem: PropTypes.func,
   inputContainerBorderStyle: ViewPropTypes.style,
   inputContainerStyle: ViewPropTypes.style,
+  placeholderTextStyle: ViewPropTypes.style,
+  searchPlaceholderTextStyle: ViewPropTypes.style,
+  listItemTitleTextStyle: ViewPropTypes.style,
+  listItemSubtitleTextStyle: ViewPropTypes.style,
+  chipTitleTextStyle: ViewPropTypes.style,
+  chipSubTitleTextStyle: ViewPropTypes.style,
 };
 
 index.defaultProps = {
@@ -421,7 +455,9 @@ index.defaultProps = {
     onPress,
     isSelected = false,
     checkedIcon,
-    unCheckedIcon
+    unCheckedIcon,
+    listItemTitleTextStyle,
+    listItemSubtitleTextStyle
   ) => (
     <TouchableHighlight
       underlayColor="#f2f2f2"
@@ -431,21 +467,36 @@ index.defaultProps = {
       <View style={styles.itemMainView}>
         <View>{isSelected ? checkedIcon : unCheckedIcon}</View>
         <View style={styles.itemContentView}>
-          <Text style={styles.itemTitleTextStyle}>{item.title}</Text>
+          <Text style={[styles.itemTitleTextStyle, listItemTitleTextStyle]}>
+            {item.title}
+          </Text>
           {item.subtitle ? (
-            <Text style={styles.itemSubtitleTextStyle}>{item.subtitle}</Text>
+            <Text
+              style={[styles.itemSubtitleTextStyle, listItemSubtitleTextStyle]}
+            >
+              {item.subtitle}
+            </Text>
           ) : null}
         </View>
       </View>
     </TouchableHighlight>
   ),
-  renderSelectedItem: (item, onClose, style, iconStyle) => (
+  renderSelectedItem: (
+    item,
+    onClose,
+    style,
+    iconStyle,
+    titleTextStyle,
+    subTitleTextStyle
+  ) => (
     <Chip
       key={item.key}
       iconStyle={iconStyle}
       onClose={onClose}
       text={item.title}
+      textStyle={titleTextStyle}
       subtitle={item.subtitle}
+      subtitleStyle={subTitleTextStyle}
       style={style}
     />
   ),
@@ -478,6 +529,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "grey",
     padding: 10,
+    height: 50,
   },
   textStyle: {
     color: "white",
@@ -509,7 +561,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#243746",
   },
   itemContentView: {
-    marginLeft: 15,
+    marginLeft: 10,
     justifyContent: "center",
   },
   itemTitleTextStyle: {
