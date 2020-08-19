@@ -700,6 +700,7 @@ const styles = StyleSheet.create({
   placeholderView: {
     flexDirection: "row",
     alignItems: "center",
+    paddingBottom: 3,
   },
   placeholderIconView: {
     flex: 1,
