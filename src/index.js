@@ -295,7 +295,14 @@ export class index extends Component {
     ) {
       return this.renderSelectItemsChip(this.state.selectedItems);
     } else {
-      return <Text style={placeholderTextStyle}>{placeholderText}</Text>;
+      return (
+        <View style={styles.placeholderView}>
+          <Text style={placeholderTextStyle}>{placeholderText}</Text>
+          <View style={styles.placeholderIconView}>
+            <Icon name={"chevron-down"} size={25} color={"grey"} />
+          </View>
+        </View>
+      );
     }
   };
 
@@ -304,7 +311,12 @@ export class index extends Component {
     switch (select) {
       case "single":
         return (
-          <Text style={placeholderTextStyle}>{this.selectInputText()}</Text>
+          <View style={styles.placeholderView}>
+            <Text style={placeholderTextStyle}>{this.selectInputText()}</Text>
+            <View style={styles.placeholderIconView}>
+              <Icon name={"chevron-down"} size={25} color={"grey"} />
+            </View>
+          </View>
         );
       case "multi":
         return this.multiSelectItems();
@@ -578,6 +590,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
+    alignItems: "center",
   },
   inputBelowContainer: {
     flexDirection: "row",
@@ -683,6 +696,15 @@ const styles = StyleSheet.create({
   closeTouch: {
     borderRadius: 50,
     padding: 3,
+  },
+  placeholderView: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  placeholderIconView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "flex-end",
   },
 });
 
