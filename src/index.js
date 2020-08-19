@@ -82,7 +82,7 @@ export class index extends Component {
     this.setState({ modalVisible: visible });
   };
 
-  _renderSingleSelectItems = (items, onSubmit) => {
+  _renderSingleSelectItems = (type, items, onSubmit) => {
     const {
       renderItem,
       checkedIcon,
@@ -98,9 +98,14 @@ export class index extends Component {
           onScroll={this.handleOnScroll}
           scrollEventThrottle={16}
         >
-          <View>
+          <View
+            style={
+              type === "chip" ? styles.chipsContainer : styles.listContainer
+            }
+          >
             {items.map((item) =>
               renderItem(
+                type,
                 item,
                 () => {
                   this.setModalVisible(false);
@@ -124,7 +129,7 @@ export class index extends Component {
     );
   };
 
-  _renderMultiSelectItems = (items, onSubmit) => {
+  _renderMultiSelectItems = (type, items, onSubmit) => {
     const {
       renderItem,
       checkedIcon,
@@ -140,31 +145,40 @@ export class index extends Component {
           onScroll={this.handleOnScroll}
           scrollEventThrottle={16}
         >
-          {items.map((item) =>
-            renderItem(
-              item,
-              () => {
-                let tempSelectedItems = this.state.tempSelectedItems;
-                if (tempSelectedItems.find((rawItem) => rawItem === item.key)) {
-                  tempSelectedItems = tempSelectedItems.filter(
-                    (rawItem) => rawItem !== item.key
-                  );
-                } else {
-                  tempSelectedItems.push(item.key);
-                }
-                this.setState({
-                  tempSelectedItems,
-                });
-              },
-              this.state.tempSelectedItems.find(
-                (rawItem) => rawItem === item.key
-              ),
-              checkedIcon,
-              unCheckedIcon,
-              listItemTitleTextStyle,
-              listItemSubtitleTextStyle
-            )
-          )}
+          <View
+            style={
+              type === "chip" ? styles.chipsContainer : styles.listContainer
+            }
+          >
+            {items.map((item) =>
+              renderItem(
+                type,
+                item,
+                () => {
+                  let tempSelectedItems = this.state.tempSelectedItems;
+                  if (
+                    tempSelectedItems.find((rawItem) => rawItem === item.key)
+                  ) {
+                    tempSelectedItems = tempSelectedItems.filter(
+                      (rawItem) => rawItem !== item.key
+                    );
+                  } else {
+                    tempSelectedItems.push(item.key);
+                  }
+                  this.setState({
+                    tempSelectedItems,
+                  });
+                },
+                this.state.tempSelectedItems.find(
+                  (rawItem) => rawItem === item.key
+                ),
+                checkedIcon,
+                unCheckedIcon,
+                listItemTitleTextStyle,
+                listItemSubtitleTextStyle
+              )
+            )}
+          </View>
         </ScrollView>
         <TouchableHighlight
           activeOpacity={1}
@@ -200,6 +214,11 @@ export class index extends Component {
           this.setState({
             searchText,
           });
+        },
+        () => {
+          this.setState({
+            searchText: "",
+          });
         }
       );
     } else {
@@ -207,12 +226,12 @@ export class index extends Component {
     }
   };
 
-  _renderItems = (type, items, onSubmit) => {
-    switch (type) {
-      case "select":
-        return this._renderSingleSelectItems(items, onSubmit);
+  _renderItems = (select, type, items, onSubmit) => {
+    switch (select) {
+      case "single":
+        return this._renderSingleSelectItems(type, items, onSubmit);
       case "multi":
-        return this._renderMultiSelectItems(items, onSubmit);
+        return this._renderMultiSelectItems(type, items, onSubmit);
       // case "tree":
       //   return (<Tree/>);
     }
@@ -281,9 +300,9 @@ export class index extends Component {
   };
 
   _renderSelectInputText = () => {
-    const { type, placeholderTextStyle } = this.props;
-    switch (type) {
-      case "select":
+    const { select, placeholderTextStyle } = this.props;
+    switch (select) {
+      case "single":
         return (
           <Text style={placeholderTextStyle}>{this.selectInputText()}</Text>
         );
@@ -295,7 +314,7 @@ export class index extends Component {
   };
 
   _renderSelectInput = () => {
-    const { type, inputContainerStyle, selectedItemsPosition } = this.props;
+    const { select, inputContainerStyle, selectedItemsPosition } = this.props;
     const inputContainerBorderStyle = {
       borderBottomColor: this._getColor(),
       ...this._getLineStyleVariant(),
@@ -321,7 +340,7 @@ export class index extends Component {
           </View>
         </TouchableOpacity>
         <View style={styles.inputBelowContainer}>
-          {type === "multi" && selectedItemsPosition === "below"
+          {select === "multi" && selectedItemsPosition === "below"
             ? this.renderSelectItemsChip(this.state.selectedItems)
             : null}
         </View>
@@ -349,6 +368,7 @@ export class index extends Component {
   render() {
     const { props, state, setModalVisible } = this;
     let {
+      select,
       type,
       items,
       onSubmit,
@@ -386,7 +406,7 @@ export class index extends Component {
           {...modelProps}
         >
           <View style={this.getContainerStyle()}>
-            {this._renderItems(type, items, onSubmit)}
+            {this._renderItems(select, type, items, onSubmit)}
           </View>
         </Modal>
       </View>
@@ -395,6 +415,7 @@ export class index extends Component {
 }
 
 index.propTypes = {
+  select: PropTypes.string,
   type: PropTypes.string,
   items: PropTypes.arrayOf(
     PropTypes.shape({
@@ -428,7 +449,8 @@ index.propTypes = {
 };
 
 index.defaultProps = {
-  type: "select",
+  select: "single",
+  type: "list",
   defaultSelectedItems: [],
   placeholderText: "Select Item",
   enableSearch: false,
@@ -441,16 +463,28 @@ index.defaultProps = {
   tintColor: "rgb(0, 145, 234)",
   baseColor: "rgba(0, 0, 0, .38)",
   selectedItemsPosition: "inside",
-  renderSearchInput: (value, placeholder, onChange) => (
+  renderSearchInput: (value, placeholder, onChange, onClear) => (
     <View style={styles.searchInputView}>
-      <TextInput
-        value={value}
-        placeholder={placeholder}
-        onChangeText={onChange}
-      />
+      <View style={styles.searchInputTextView}>
+        <TextInput
+          value={value}
+          placeholder={placeholder}
+          onChangeText={onChange}
+        />
+      </View>
+      {value ? (
+        <TouchableHighlight
+          underlayColor="#f2f2f2"
+          style={styles.closeTouch}
+          onPress={onClear}
+        >
+          <Icon name={"close"} size={25} color={"grey"} />
+        </TouchableHighlight>
+      ) : null}
     </View>
   ),
   renderItem: (
+    type,
     item,
     onPress,
     isSelected = false,
@@ -459,27 +493,63 @@ index.defaultProps = {
     listItemTitleTextStyle,
     listItemSubtitleTextStyle
   ) => (
-    <TouchableHighlight
-      underlayColor="#f2f2f2"
-      key={item.key}
-      onPress={onPress}
-    >
-      <View style={styles.itemMainView}>
-        <View>{isSelected ? checkedIcon : unCheckedIcon}</View>
-        <View style={styles.itemContentView}>
-          <Text style={[styles.itemTitleTextStyle, listItemTitleTextStyle]}>
-            {item.title}
-          </Text>
-          {item.subtitle ? (
-            <Text
-              style={[styles.itemSubtitleTextStyle, listItemSubtitleTextStyle]}
-            >
-              {item.subtitle}
+    <View>
+      {type === "list" ? (
+        <TouchableHighlight
+          underlayColor="#f2f2f2"
+          key={item.key}
+          onPress={onPress}
+        >
+          <View style={styles.itemMainView}>
+            <View>{isSelected ? checkedIcon : unCheckedIcon}</View>
+            <View style={styles.itemContentView}>
+              <Text style={[styles.itemTitleTextStyle, listItemTitleTextStyle]}>
+                {item.title}
+              </Text>
+              {item.subtitle ? (
+                <Text
+                  style={[
+                    styles.itemSubtitleTextStyle,
+                    listItemSubtitleTextStyle,
+                  ]}
+                >
+                  {item.subtitle}
+                </Text>
+              ) : null}
+            </View>
+          </View>
+        </TouchableHighlight>
+      ) : null}
+      {type === "chip" ? (
+        <TouchableHighlight
+          activeOpacity={1}
+          underlayColor="#f2f2f2"
+          key={item.key}
+          onPress={onPress}
+          style={
+            isSelected
+              ? styles.chipItemSelectedMainView
+              : styles.chipItemMainView
+          }
+        >
+          <View style={styles.chipItemContentView}>
+            <Text style={[styles.itemTitleTextStyle, listItemTitleTextStyle]}>
+              {item.title}
             </Text>
-          ) : null}
-        </View>
-      </View>
-    </TouchableHighlight>
+            {item.subtitle ? (
+              <Text
+                style={[
+                  styles.itemSubtitleTextStyle,
+                  listItemSubtitleTextStyle,
+                ]}
+              >
+                {item.subtitle}
+              </Text>
+            ) : null}
+          </View>
+        </TouchableHighlight>
+      ) : null}
+    </View>
   ),
   renderSelectedItem: (
     item,
@@ -529,8 +599,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "grey",
     paddingHorizontal: 10,
-    justifyContent: "center",
+    alignItems: "center",
     height: 50,
+    flexDirection: "row",
   },
   textStyle: {
     color: "white",
@@ -543,6 +614,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 15,
+  },
+  chipItemMainView: {
+    borderWidth: 1,
+    borderRadius: 50,
+    borderColor: "#e0e0e0",
+    alignItems: "center",
+    paddingVertical: 7,
+    paddingHorizontal: 10,
+    marginVertical: 5,
+    marginHorizontal: 3,
+  },
+  chipItemSelectedMainView: {
+    borderWidth: 1,
+    borderRadius: 50,
+    borderColor: "red",
+    alignItems: "center",
+    paddingVertical: 7,
+    paddingHorizontal: 10,
+    marginVertical: 5,
+    marginHorizontal: 3,
   },
   unselectedIconView: {
     borderWidth: 1,
@@ -565,6 +656,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     justifyContent: "center",
   },
+  chipItemContentView: {
+    justifyContent: "center",
+  },
   itemTitleTextStyle: {
     fontSize: 16,
     color: "grey",
@@ -573,6 +667,22 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#243746",
     fontWeight: "bold",
+  },
+  chipsContainer: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    paddingHorizontal: 10,
+  },
+  listContainer: {
+    flex: 1,
+  },
+  searchInputTextView: {
+    flex: 1,
+  },
+  closeTouch: {
+    borderRadius: 50,
+    padding: 3,
   },
 });
 

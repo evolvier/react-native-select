@@ -84,7 +84,8 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar />
       <ReactNativeSelect
-        type="multi"
+        select="multi"
+        type="list"
         placeholderText="Click Here"
         selectedItemsPosition="below"
         defaultSelectedItems={["item15"]}
