@@ -88,8 +88,9 @@ export default function App() {
         type="list"
         placeholderText="Click Here"
         selectedItemsPosition="below"
-        defaultSelectedItems={["item15"]}
-        defaultSelectedItem="item15"
+        defaultSelectedItems={["item1"]}
+        defaultSelectedItem="item1"
+        maxSelection={5}
         items={data}
         enableSearch
         presentationStyle="fullScreen"

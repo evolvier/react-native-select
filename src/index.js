@@ -136,10 +136,27 @@ export class index extends Component {
       unCheckedIcon,
       listItemTitleTextStyle,
       listItemSubtitleTextStyle,
+      maxSelection,
     } = this.props;
+    const { tempSelectedItems } = this.state;
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {this._renderSearchInput()}
+        {maxSelection ? (
+          <View
+            style={
+              tempSelectedItems.length >= maxSelection
+                ? styles.warningActiveView
+                : styles.warningView
+            }
+          >
+            <Text style={[styles.warningText, listItemTitleTextStyle]}>
+              {tempSelectedItems.length >= maxSelection
+                ? "Maximum selection reached!"
+                : "You can select maximum " + maxSelection + " items"}
+            </Text>
+          </View>
+        ) : null}
         <ScrollView
           ref={this.scrollViewRef}
           onScroll={this.handleOnScroll}
@@ -156,6 +173,7 @@ export class index extends Component {
                 item,
                 () => {
                   let tempSelectedItems = this.state.tempSelectedItems;
+
                   if (
                     tempSelectedItems.find((rawItem) => rawItem === item.key)
                   ) {
@@ -163,7 +181,13 @@ export class index extends Component {
                       (rawItem) => rawItem !== item.key
                     );
                   } else {
-                    tempSelectedItems.push(item.key);
+                    if (maxSelection) {
+                      if (tempSelectedItems.length < maxSelection) {
+                        tempSelectedItems.push(item.key);
+                      }
+                    } else {
+                      tempSelectedItems.push(item.key);
+                    }
                   }
                   this.setState({
                     tempSelectedItems,
@@ -446,6 +470,7 @@ index.propTypes = {
     PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   ),
   selectedItemsPosition: PropTypes.string,
+  maxSelection: PropTypes.number,
   onSubmit: PropTypes.func.isRequired,
   placeholderText: PropTypes.string,
   searchInputText: PropTypes.string,
@@ -583,7 +608,9 @@ index.defaultProps = {
     />
   ),
   checkedIcon: <Icon name={"check-circle"} size={30} />,
-  unCheckedIcon: <Icon name={"check-circle-outline"} size={30} />,
+  unCheckedIcon: (
+    <Icon name={"check-circle-outline"} size={30} color={"#D0D0D0"} />
+  ),
 };
 
 const styles = StyleSheet.create({
@@ -706,6 +733,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "flex-end",
+  },
+  warningView: {
+    backgroundColor: "#F0F0F0",
+    paddingVertical: 7,
+    paddingHorizontal: 10,
+    marginHorizontal: 15,
+    borderRadius: 5,
+    marginTop: 3,
+  },
+  warningActiveView: {
+    backgroundColor: "#FFAAAA",
+    paddingVertical: 7,
+    paddingHorizontal: 10,
+    marginHorizontal: 15,
+    borderRadius: 5,
+    marginTop: 3,
   },
 });
 
