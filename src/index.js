@@ -229,6 +229,7 @@ export class index extends Component {
       renderSearchInput,
       enableSearch,
       searchInputPlaceholderText,
+      clearSearchIcon,
     } = this.props;
     if (enableSearch) {
       return renderSearchInput(
@@ -243,7 +244,8 @@ export class index extends Component {
           this.setState({
             searchText: "",
           });
-        }
+        },
+        clearSearchIcon
       );
     } else {
       return null;
@@ -311,6 +313,7 @@ export class index extends Component {
       placeholderText,
       selectedItemsPosition,
       placeholderTextStyle,
+      placeholderRightIcon,
     } = this.props;
     if (
       selectedItemsPosition === "inside" &&
@@ -322,9 +325,7 @@ export class index extends Component {
       return (
         <View style={styles.placeholderView}>
           <Text style={placeholderTextStyle}>{placeholderText}</Text>
-          <View style={styles.placeholderIconView}>
-            <Icon name={"chevron-down"} size={25} color={"grey"} />
-          </View>
+          <View style={styles.placeholderIconView}>{placeholderRightIcon}</View>
         </View>
       );
     }
@@ -338,7 +339,7 @@ export class index extends Component {
           <View style={styles.placeholderView}>
             <Text style={placeholderTextStyle}>{this.selectInputText()}</Text>
             <View style={styles.placeholderIconView}>
-              <Icon name={"chevron-down"} size={25} color={"grey"} />
+              {placeholderRightIcon}
             </View>
           </View>
         );
@@ -483,6 +484,11 @@ index.propTypes = {
   listItemSubtitleTextStyle: ViewPropTypes.style,
   chipTitleTextStyle: ViewPropTypes.style,
   chipSubTitleTextStyle: ViewPropTypes.style,
+  checkedIcon: PropTypes.element,
+  unCheckedIcon: PropTypes.element,
+  clearSearchIcon: PropTypes.element,
+  placeholderRightIcon: PropTypes.element,
+  test: PropTypes.element,
 };
 
 index.defaultProps = {
@@ -500,7 +506,13 @@ index.defaultProps = {
   tintColor: "rgb(0, 145, 234)",
   baseColor: "rgba(0, 0, 0, .38)",
   selectedItemsPosition: "inside",
-  renderSearchInput: (value, placeholder, onChange, onClear) => (
+  renderSearchInput: (
+    value,
+    placeholder,
+    onChange,
+    onClear,
+    clearSearchIcon
+  ) => (
     <View style={styles.searchInputView}>
       <View style={styles.searchInputTextView}>
         <TextInput
@@ -515,7 +527,7 @@ index.defaultProps = {
           style={styles.closeTouch}
           onPress={onClear}
         >
-          <Icon name={"close"} size={25} color={"grey"} />
+          {clearSearchIcon}
         </TouchableHighlight>
       ) : null}
     </View>
@@ -611,6 +623,8 @@ index.defaultProps = {
   unCheckedIcon: (
     <Icon name={"check-circle-outline"} size={30} color={"#D0D0D0"} />
   ),
+  clearSearchIcon: <Icon name={"close"} size={25} color={"grey"} />,
+  placeholderRightIcon: <Icon name={"chevron-down"} size={25} color={"grey"} />,
 };
 
 const styles = StyleSheet.create({
@@ -727,7 +741,7 @@ const styles = StyleSheet.create({
   placeholderView: {
     flexDirection: "row",
     alignItems: "center",
-    paddingBottom: 3,
+    paddingBottom: 1,
   },
   placeholderIconView: {
     flex: 1,
