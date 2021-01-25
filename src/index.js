@@ -143,17 +143,9 @@ export class index extends Component {
       <SafeAreaView style={{ flex: 1 }}>
         {this._renderSearchInput()}
         {maxSelection ? (
-          <View
-            style={
-              tempSelectedItems.length >= maxSelection
-                ? styles.warningActiveView
-                : styles.warningView
-            }
-          >
+          <View style={styles.maxLimitWarningView}>
             <Text style={[styles.warningText, listItemTitleTextStyle]}>
-              {tempSelectedItems.length >= maxSelection
-                ? "Maximum selection reached!"
-                : "You can select maximum " + maxSelection + " items"}
+              {"You can select maximum " + maxSelection + " items"}
             </Text>
           </View>
         ) : null}
@@ -204,6 +196,21 @@ export class index extends Component {
             )}
           </View>
         </ScrollView>
+        {tempSelectedItems && tempSelectedItems.length ? (
+          <View
+            style={
+              tempSelectedItems.length >= maxSelection
+                ? styles.maxCountView
+                : styles.selectedItemsCountView
+            }
+          >
+            <Text style={[styles.whiteText, listItemTitleTextStyle]}>
+              {tempSelectedItems.length >= maxSelection
+                ? "Maximum selection reached!"
+                : tempSelectedItems.length + " items selected"}
+            </Text>
+          </View>
+        ) : null}
         <TouchableHighlight
           activeOpacity={1}
           underlayColor={"#182833"}
@@ -642,9 +649,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#F194FF",
     borderRadius: 0,
     padding: 15,
-    marginHorizontal: 15,
-    marginTop: 5,
-    marginBottom: 10,
+    // marginHorizontal: 15,
+    // marginTop: 5,
+    // marginBottom: 10,
   },
   searchInputView: {
     marginHorizontal: 15,
@@ -763,6 +770,24 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     borderRadius: 5,
     marginTop: 3,
+  },
+  maxLimitWarningView: {
+    marginHorizontal: 15,
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+  selectedItemsCountView: {
+    paddingVertical: 5,
+    alignItems: "center",
+    backgroundColor: "#d4b299",
+  },
+  maxCountView: {
+    paddingVertical: 5,
+    alignItems: "center",
+    backgroundColor: "#ff6338",
+  },
+  whiteText: {
+    color: "#FFFFFF",
   },
 });
 
