@@ -339,7 +339,7 @@ export class index extends Component {
   };
 
   _renderSelectInputText = () => {
-    const { select, placeholderTextStyle } = this.props;
+    const { select, placeholderTextStyle, placeholderRightIcon } = this.props;
     switch (select) {
       case "single":
         return (
