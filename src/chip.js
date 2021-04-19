@@ -40,9 +40,10 @@ export default class Chip extends React.PureComponent {
       <View style={[styles.root, style]}>
         <View style={styles.container}>
           <View style={styles.contentContainer}>
+            {text ?  (
             <Text style={[styles.text, textStyle]} numberOfLines={1}>
               {text}
-            </Text>
+            </Text> ) : null}
             {subtitle ? (
               <Text style={[styles.subtitle, subtitleStyle]} numberOfLines={1}>
                 {subtitle}
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderWidth: 1,
     borderColor: "#e0e0e0",
+    backgroundColor: "#ffffff",
     paddingLeft: 15,
     paddingRight: 10,
     paddingVertical: 5,

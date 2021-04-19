@@ -437,7 +437,7 @@ export class index extends Component {
       modelProps.propagateSwipe = true;
     }
     return (
-      <View>
+      <SafeAreaView>
         {this._renderSelectInput()}
         <Modal
           style={{ margin: 0, justifyContent: "flex-end" }}
@@ -453,7 +453,7 @@ export class index extends Component {
             {this._renderItems(select, type, items, onSubmit)}
           </View>
         </Modal>
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -559,9 +559,10 @@ index.defaultProps = {
           <View style={styles.itemMainView}>
             <View>{isSelected ? checkedIcon : unCheckedIcon}</View>
             <View style={styles.itemContentView}>
+              {item.title ? (
               <Text style={[styles.itemTitleTextStyle, listItemTitleTextStyle]}>
                 {item.title}
-              </Text>
+              </Text>) : null}
               {item.subtitle ? (
                 <Text
                   style={[
