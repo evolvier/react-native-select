@@ -12,6 +12,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Dimensions,
 } from "react-native";
 
 export default class Chip extends React.PureComponent {
@@ -40,10 +41,11 @@ export default class Chip extends React.PureComponent {
       <View style={[styles.root, style]}>
         <View style={styles.container}>
           <View style={styles.contentContainer}>
-            {text ?  (
-            <Text style={[styles.text, textStyle]} numberOfLines={1}>
-              {text}
-            </Text> ) : null}
+            {text ? (
+              <Text style={[styles.text, textStyle]} numberOfLines={1}>
+                {text}
+              </Text>
+            ) : null}
             {subtitle ? (
               <Text style={[styles.subtitle, subtitleStyle]} numberOfLines={1}>
                 {subtitle}
@@ -69,6 +71,8 @@ export default class Chip extends React.PureComponent {
   }
 }
 
+const { width } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   root: {
     justifyContent: "center",
@@ -85,11 +89,12 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     overflow: "hidden",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
     alignItems: "center",
   },
   contentContainer: {
     justifyContent: "center",
+    maxWidth: width - 100,
   },
   text: {
     color: "grey",

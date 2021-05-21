@@ -466,6 +466,7 @@ index.propTypes = {
       key: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       title: PropTypes.string.isRequired,
       subtitle: PropTypes.string,
+      subtitle2: PropTypes.string,
       disabled: PropTypes.bool,
       children: PropTypes.array,
     })
@@ -489,6 +490,7 @@ index.propTypes = {
   searchPlaceholderTextStyle: ViewPropTypes.style,
   listItemTitleTextStyle: ViewPropTypes.style,
   listItemSubtitleTextStyle: ViewPropTypes.style,
+  listItemSubtitle2TextStyle: ViewPropTypes.style,
   chipTitleTextStyle: ViewPropTypes.style,
   chipSubTitleTextStyle: ViewPropTypes.style,
   checkedIcon: PropTypes.element,
@@ -547,7 +549,8 @@ index.defaultProps = {
     checkedIcon,
     unCheckedIcon,
     listItemTitleTextStyle,
-    listItemSubtitleTextStyle
+    listItemSubtitleTextStyle,
+    listItemSubtitle2TextStyle
   ) => (
     <View>
       {type === "list" ? (
@@ -560,9 +563,12 @@ index.defaultProps = {
             <View>{isSelected ? checkedIcon : unCheckedIcon}</View>
             <View style={styles.itemContentView}>
               {item.title ? (
-              <Text style={[styles.itemTitleTextStyle, listItemTitleTextStyle]}>
-                {item.title}
-              </Text>) : null}
+                <Text
+                  style={[styles.itemTitleTextStyle, listItemTitleTextStyle]}
+                >
+                  {item.title}
+                </Text>
+              ) : null}
               {item.subtitle ? (
                 <Text
                   style={[
@@ -571,6 +577,16 @@ index.defaultProps = {
                   ]}
                 >
                   {item.subtitle}
+                </Text>
+              ) : null}
+              {item.subtitle2 ? (
+                <Text
+                  style={[
+                    styles.itemSubtitle2TextStyle,
+                    listItemSubtitle2TextStyle,
+                  ]}
+                >
+                  {item.subtitle2}
                 </Text>
               ) : null}
             </View>
@@ -673,7 +689,6 @@ const styles = StyleSheet.create({
   itemMainView: {
     flexDirection: "row",
     flex: 1,
-    alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
@@ -715,6 +730,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#243746",
   },
   itemContentView: {
+    flex: 1,
     marginLeft: 10,
     justifyContent: "center",
   },
@@ -729,6 +745,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#243746",
     fontWeight: "bold",
+  },
+  itemSubtitle2TextStyle: {
+    fontSize: 10,
+    color: "#243746",
+    marginTop: 5,
   },
   chipsContainer: {
     flex: 1,
